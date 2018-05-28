@@ -7,5 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Olivia Nielsen",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "knex": "^0.14.6",
+    "mysql2": "^1.5.3",
+    "nodemon": "^1.17.5",
+    "objection": "^1.1.8"
+  }
 }
