@@ -1,5 +1,5 @@
-/* //jQuery 
-$("#form").submit(function() {
+//jQuery 
+$("#signinform").submit(function() {
     console.log('form submit');
     $.ajax({
         data: $(this).serialize(),
@@ -13,7 +13,7 @@ $("#form").submit(function() {
             console.log("result", result);
             switch(result.status) {
                 case 200:
-                    location.href = "/index";
+                    location.href = "/";
                     break;
                 case 403:
                     console.error(result.error);
@@ -22,4 +22,4 @@ $("#form").submit(function() {
         }
     });
     return false;
-}); */
+}); 

@@ -24,7 +24,7 @@
                             <span class="input-group-text"> <i class="fa fa-user"></i> </span>
                             </div>
                         <input name="email" class="form-control" placeholder="Email" type="email">
-                    </div> <!-- input-group.// -->
+                    </div> <!-- input-group// -->
                     </div> <!-- form-group// -->
                     <div class="form-group">
                     <div class="input-group">
@@ -32,7 +32,7 @@
                             <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
                             </div>
                         <input name="password" class="form-control" placeholder="******" type="password">
-                    </div> <!-- input-group.// -->
+                    </div> <!-- input-group// -->
                     </div> <!-- form-group// -->
                     <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-block">Sign In</button>
@@ -42,38 +42,6 @@
             </div> <!-- card.// -->
     </div>
 </form>
-
-<script>
-    //jQuery 
-$("#signinform").submit(function() {
-    console.log('form submit');
-    $.ajax({
-        data: $(this).serialize(),
-        url: this.action,
-        type: this.method,
-        //callback function
-        error: error => {
-            console.log("Error ", error);
-        },
-        success: result => {
-            console.log("result", result);
-            switch(result.status) {
-                case 200:
-                    location.href = "/";
-                    break;
-                case 403:
-                    console.error(result.error);
-                    break;
-            }
-        }
-    });
-    return false;
-});
-</script>
-
-
-
-
 
 
 

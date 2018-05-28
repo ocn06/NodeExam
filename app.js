@@ -4,6 +4,9 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const app = express();
+const server = require("http").Server(app);
+const io = require("socket.io")(server);
+
 
 const Knex = require("knex");
 const objection = require("objection");
@@ -35,9 +38,11 @@ app.use(express.static(__dirname + '/app/'));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(expressSession);
+io.use((socket, next) => {
+    expressSession(socket.request, socket.request.res, next);
+});
 
 app.get("/", (req, res) => {
-    console.log('session', req.session);
     if (req.session.userId) {
         res.sendFile(__dirname + "/app/home.html");
     } else {
@@ -74,6 +79,7 @@ app.post("/api/signup", async (req, res) => {
     req.session.userId = user["user_id"];
     req.session.username = username;
     req.session.email = email;
+    res.redirect("/");
     return res.json({ status: 200, error: null });
 });
 
@@ -93,12 +99,13 @@ app.post("/api/signin", async (req, res) => {
         req.session.userId = user["user_id"];
         req.session.username = username;
         req.session.email = email;
+        res.redirect("/");
         return res.json({ status : 200, error: null });
     };
 
     return res.json({ status : 403, error: "The password was incorrect" });
 });
 
-app.listen(3000, () => {
+server.listen(3000, () => {
     console.log("Server is listening on port 3000");
 });

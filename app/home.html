@@ -16,8 +16,34 @@
     <!-- <link rel="stylesheet" type="text/css" href="../styles.css"> -->
 </head>
 
-<body>
-    <h1>Hello What to do?!</h1>
-</body>
+<form name="form" id="form" action="">
+    <div class "container">
+        <div class="card">
+            <article class="card-body">
+                <a href="/signin" class="float-right btn btn-outline-primary">Sign Out</a>
+                <h4 class="card-title text-center mb-4 mt-1">What To Do?</h4>
+                <hr>
+                <form>
+                    <div class="form-group">
+                    <div class="input-group">
+                        <h5 class="text-center">{{username}}'s To Do's</h5>
+                        <input id="todos" placeholder="To Do" autocomplete="off" />
+                        <button type="submit">Add</button>
+                    </div> <!-- input-group// -->
+                    </div> <!-- form-group// -->
+                </form>
+            </article>
+        </div>
+    </div>
+</form>
+
+<script> 
+    $(document).ready(function(){
+        $('form').on('submit', function(){
+
+        });
+
+    });
+</script>
 
 </html>

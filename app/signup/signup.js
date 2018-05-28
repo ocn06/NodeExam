@@ -1,5 +1,5 @@
-/* //jQuery
-$("#form").submit(function() {
+//jQuery
+$("#signupform").submit(function() {
     console.log('form submit');
     $.ajax({
         data: $(this).serialize(),
@@ -21,4 +21,4 @@ $("#form").submit(function() {
         }
     });
     return false;
-}); */
+});
