@@ -1,0 +1,11 @@
+{
+  "name": "examproject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Olivia Nielsen",
+  "license": "ISC"
+}
