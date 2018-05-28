@@ -59,7 +59,7 @@ $("#signinform").submit(function() {
             console.log("result", result);
             switch(result.status) {
                 case 200:
-                    location.href = "/index";
+                    location.href = "/";
                     break;
                 case 403:
                     console.error(result.error);
