@@ -1,7 +1,5 @@
-CREATE TABLE Users (
-    [user_id] int(11) NOT NULL AUTO_INCREMENT, 
-    [password] varchar(255) NOT NULL,
-    [username] varchar(255) NOT NULL,
-    [email] varchar(255) NOT NULL
-    PRIMARY KEY(user_id)
-);
+INSERT INTO Users (password, username, email)
+VALUES ('passtest', 'usertest', 'test@test.test');
+
+INSERT INTO Customers (CustomerName, ContactName, Address, City, PostalCode, Country)
+VALUES ('Cardinal', 'Tom B. Erichsen', 'Skagen 21', 'Stavanger', '4006', 'Norway');

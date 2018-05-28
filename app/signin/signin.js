@@ -1,4 +1,4 @@
-//jQuery 
+/* //jQuery 
 $("#form").submit(function() {
     console.log('form submit');
     $.ajax({
@@ -22,4 +22,4 @@ $("#form").submit(function() {
         }
     });
     return false;
-});
+}); */

@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const app = express();
 const server = require("http").Server(app);
-const io = require("socket.io").apply(server);
+const io = require("socket.io")(server);
 
 const Knex = require("knex");
 const objection = require("objection");
@@ -42,8 +42,9 @@ io.use((socket, next) => {
 });
 
 app.get("/index", (res, req) => {
+    console.log('session', req.session);
     if (req.session.userId) {
-        res.sendFile(__dirname + "/app/index.html");
+        res.sendFile(__dirname + "/app/home.html");
     } else {
         res.redirect("/signin/");
     }
@@ -63,10 +64,10 @@ app.post("/api/signup", async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     const email = req.body.email;
-    let [user] = await db.User.query().select().where("username", username);
+    let [user] = await db.User.query().select().where("email", email);
     
     if (user != null) {
-        return res.json({ status: 403, error: `User with username '${username}' already exists` });
+        return res.json({ status: 403, error: `User with email '${email}' already exists` });
     }
 
     user = await db.User.query().insert({
@@ -77,6 +78,7 @@ app.post("/api/signup", async (req, res) => {
 
     req.session.userId = user["user_id"];
     req.session.username = username;
+    req.session.email = email;
     return res.json({ status: 200, error: null });
 });
 
@@ -84,16 +86,18 @@ app.post("/api/signin", async (req, res) => {
     console.log("signin");
 
     const username = req.body.username;
+    const email = req.body.email;
     const password = req.body.password;
-    const [user] = await db.User.query().select().where("username", username);
+    const [user] = await db.User.query().select().where("email", email);
 
     if (user == null) {
-        return res.json({ status: 403, error: `There are no user with username '${username}'` }); // string interpolation
+        return res.json({ status: 403, error: `There are no user with email '${email}'` }); // string interpolation
     }
 
     if (await bcrypt.compare(password, user.password)) {
         req.session.userId = user["user_id"];
         req.session.username = username;
+        req.session.email = email;
         return res.json({ status : 200, error: null });
     };
 
