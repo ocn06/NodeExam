@@ -79,7 +79,6 @@ app.post("/api/signup", async (req, res) => {
     req.session.userId = user["user_id"];
     req.session.username = username;
     req.session.email = email;
-    res.redirect("/");
     return res.json({ status: 200, error: null });
 });
 
@@ -99,11 +98,18 @@ app.post("/api/signin", async (req, res) => {
         req.session.userId = user["user_id"];
         req.session.username = username;
         req.session.email = email;
-        res.redirect("/");
         return res.json({ status : 200, error: null });
     };
 
     return res.json({ status : 403, error: "The password was incorrect" });
+});
+
+io.on("connection", async socket => {
+    console.log("A client connected with session", socket.request.session);
+
+    const dbTodos = await db.Todo.query().join("")
+
+
 });
 
 server.listen(3000, () => {
