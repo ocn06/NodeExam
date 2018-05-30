@@ -12,57 +12,61 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
     <!-- Bootstrap css -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-
-    <!-- <link rel="stylesheet" type="text/css" href="../styles.css"> -->
-    <script type="text/javascript" scr=""></script>
+    <!-- Stylesheet-->
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+    
 </head>
 
-<ul id="todos"></ul>
-<form name="form" id="form" action="">
-    <div class "container">
-        <div class="card">
-            <article class="card-body">
-                <a href="/signin" class="float-right btn btn-outline-primary">Sign Out</a>
-                <h4 class="card-title text mb-4 mt-1">What To Do?</h4>
-                <hr>
-                <form class="form">
-                    <div class="form-group">
-                    <div class="input-group-center"> 
-                        <h5 class="text-center">{{username}}'s To Dos</h5><br>
-                        <input id="todo" class="form-control-sm " placeholder="To Do" autocomplete="off" />
+<body>
+    <form action="">
+        <div class "container">
+            <div class="card">
+                <article class="card-body">
+                    <a href="/signin" class="float-right btn btn-outline-primary">Sign Out</a>
+                    <h4 class="card-title text mb-4 mt-1">What To Do?</h4>
+                    <hr>
+                    <div class="form-group-center" text-align="center">
+                    <div class="input-group-center" text-align="center"> 
+                        <h5 id="user" class="text-center">To Dos</h5><br>
+                        <ul id="todos"></ul>
+                        <input id="newTask" class="form-control-sm " placeholder="What To Do?" autocomplete="off" />
                         <button type="submit" class="btn-sm btn-primary btn-block-sm">Add</button>
                     </div> <!-- input-group -->
                     </div> <!-- form-group -->
-                </form>
-            </article>
+                </article>
+            </div>
         </div>
-    </div>
-</form>
-
-<script> 
-    $(function(){
-        const socket = io.connect("http://localhost:3000/");
-
-        $('form').submit(function(){
-            const todo = $('#todo').val();
-            socket.emit("todos", todo);
-            $('todo').val('');
-            return false;
+    </form>
+        
+    <script> 
+        //$(document).ready(function() {
+        $(function(){
+            const socket = io.connect("http://localhost:3000/");
+            /* const username = document.getElementById("user");
+            username.innerText = `${task.username}`; */
+            console.log(socket);
+    
+                $('form').submit(function () {
+                const task = $('#newTask').val();
+                socket.emit("tasks", task);
+                $('#newTask').val('');
+                return false;
+            });
+    
+            //bliver kaldt, når der addes task
+            //data der sendes 
+            socket.on("tasks", tasks => {
+                console.log("tasks", tasks);
+                const tasksElement = document.getElementById("todos"); //<ul></ul>
+                
+                for (const task of tasks) {
+                    const taskElement = document.createElement("li");
+                    taskElement.innerText = `${task.task}`; // <li>Besked</li>
+    
+                    tasksElement.appendChild(taskElement); // adds <li> to the <ul>
+                };
+            });
         });
-    });
-
-    //bliver kaldt når app laver todo
-    socket.on("todos", todos => {
-        console.log("todos", todos);
-        const todosElement = document.getElementById("todos"); // <ul></ul>
-
-        for (const todo of todos){
-            const todoElement = document.create("li");
-            todoElement.innerText = `${todo.text}`; // <li>To do</li>
-
-            todosElement.appendChild(todoElement);
-        }
-    });
-</script>
-
+    </script>
+</body>
 </html>

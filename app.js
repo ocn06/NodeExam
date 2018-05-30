@@ -21,6 +21,7 @@ Model.knex(knex);
 const db = {
     "Knex": knex,
     "User": require("./models/User.js"),
+    "Task": require("./models/Task.js")
 };
 
 const saltRounds = 10;
@@ -44,7 +45,7 @@ io.use((socket, next) => {
 
 app.get("/", (req, res) => {
     if (req.session.userId) {
-        res.sendFile(__dirname + "/app/home.html");
+        res.sendFile(__dirname + "/app/home.html", { username: db.User.query().select("username").where("user_id", req.session.userId)})
     } else {
         res.redirect("/signin/");
     }
@@ -85,10 +86,10 @@ app.post("/api/signup", async (req, res) => {
 app.post("/api/signin", async (req, res) => {
     console.log("signin");
 
-    const username = req.body.username;
     const email = req.body.email;
     const password = req.body.password;
     const [user] = await db.User.query().select().where("email", email);
+    const username = await db.User.query().select("username").where("email", email);
 
     if (user == null) {
         return res.json({ status: 403, error: `There are no user with email '${email}'` }); // string interpolation
@@ -98,6 +99,7 @@ app.post("/api/signin", async (req, res) => {
         req.session.userId = user["user_id"];
         req.session.username = username;
         req.session.email = email;
+        console.log("username:" + username)
         return res.json({ status : 200, error: null });
     };
 
@@ -107,10 +109,39 @@ app.post("/api/signin", async (req, res) => {
 io.on("connection", async socket => {
     console.log("A client connected with session", socket.request.session);
 
-    const dbTodos = await db.Todo.query().join("")
+    // [{ 'user_id': 11, 'task_id': 1, task: 'homework' }, ...]
+    const dbTasks = await db.Task.query().join("users", join => {
+        join.on("tasks.user_id", "=", "users.user_id")
+    }).select("username", "task");
 
+    //sender til client ?
+    socket.emit("tasks", dbTasks.map(dbTasks => ({
+            username: dbTasks.username,
+            task: dbTasks.task
+    })));
 
+    //lytter til clienten og laver deklarerer objekt
+    socket.on("tasks", task => {
+        console.log("The client added this task", task);
+        const todo = {
+            username: socket.request.session.username,
+            task
+        };
+
+        io.emit("tasks", [todo]);
+        saveTask(todo);
+    });
 });
+
+async function saveTask(todo) {
+    const [user] = await db.User.query().where({ "username": task.username }).select("user_id");
+
+    await db.Task.query().insert({   
+        "user_id": user["user_id"].toString(),
+        "task": todo.task
+    });
+};
+
 
 server.listen(3000, () => {
     console.log("Server is listening on port 3000");
