@@ -115,9 +115,9 @@ io.on("connection", async socket => {
     }).select("username", "task");
 
     //sender til client ?
-    socket.emit("tasks", dbTasks.map(dbTasks => ({
-            username: dbTasks.username,
-            task: dbTasks.task
+    socket.emit("tasks", dbTasks.map(dbTask => ({
+            username: dbTask.username,
+            task: dbTask.task
     })));
 
     //lytter til clienten og laver deklarerer objekt

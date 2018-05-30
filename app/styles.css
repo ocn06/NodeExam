@@ -7,6 +7,27 @@
     height: 300px;
 }
 
-.body {
-    text-align: center;
+/* Style the list items */
+ul li {
+    cursor: pointer;
 }
+
+/* .list-clicked {
+    text-decoration: line-through;
+} */
+
+/* /* When clicked on, strike out text */
+ul li.clicked {
+    text-decoration: line-through;
+} 
+
+/* Add a "checked" mark when clicked on */
+/* ul li.checked::before {
+    content: '';
+}  */
+
+/* .body {
+    text-align: center;
+} */
+
+
