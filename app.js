@@ -119,6 +119,7 @@ io.on("connection", async socket => {
             username: dbTask.username,
             task: dbTask.task
     })));
+    //console.log("task1" + task);
 
     //lytter til clienten og laver deklarerer objekt
     socket.on("tasks", task => {
@@ -127,9 +128,11 @@ io.on("connection", async socket => {
             username: socket.request.session.username,
             task
         };
+        console.log("test");
 
         io.emit("tasks", [todo]);
         saveTask(todo);
+        console.log("todo is saved successfully");
     });
 });
 
@@ -140,6 +143,7 @@ async function saveTask(todo) {
         "user_id": user["user_id"].toString(),
         "task": todo.task
     });
+
 };
 
 
