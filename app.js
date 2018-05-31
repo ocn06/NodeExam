@@ -43,9 +43,11 @@ io.use((socket, next) => {
     expressSession(socket.request, socket.request.res, next);
 });
 
-app.get("/", (req, res) => {
+
+app.get("/", async (req, res) => {
     if (req.session.userId) {
-        res.sendFile(__dirname + "/app/home.html", { username: db.User.query().select("username").where("user_id", req.session.userId)})
+        const [username] = await db.User.query().select("username").where("user_id", req.session.userId);
+        res.sendFile(__dirname + "/app/home.html", { username })
     } else {
         res.redirect("/signin/");
     }
@@ -89,7 +91,7 @@ app.post("/api/signin", async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     const [user] = await db.User.query().select().where("email", email);
-    const username = await db.User.query().select("username").where("email", email);
+    const [username] = await db.User.query().select().where("email", email);
 
     if (user == null) {
         return res.json({ status: 403, error: `There are no user with email '${email}'` }); // string interpolation
@@ -97,9 +99,9 @@ app.post("/api/signin", async (req, res) => {
 
     if (await bcrypt.compare(password, user.password)) {
         req.session.userId = user["user_id"];
-        req.session.username = username;
+        req.session.username = username["username"];
         req.session.email = email;
-        console.log("username:" + username)
+        //console.log("username:" + username)
         return res.json({ status : 200, error: null });
     };
 
@@ -112,7 +114,7 @@ io.on("connection", async socket => {
     // [{ 'user_id': 11, 'task_id': 1, task: 'homework' }, ...]
     const dbTasks = await db.Task.query().join("users", join => {
         join.on("tasks.user_id", "=", "users.user_id")
-    }).select("username", "task");
+    }).select("task", "username");
 
     //sender til client ?
     socket.emit("tasks", dbTasks.map(dbTask => ({
@@ -128,16 +130,15 @@ io.on("connection", async socket => {
             username: socket.request.session.username,
             task
         };
-        console.log("test");
 
         io.emit("tasks", [todo]);
         saveTask(todo);
-        console.log("todo is saved successfully");
+        console.log("todo is saved successfully" + " todo: " + todo.task + " username " + todo.username + socket.request.session.username + "task: " + task);
     });
 });
 
 async function saveTask(todo) {
-    const [user] = await db.User.query().where({ "username": task.username }).select("user_id");
+    const [user] = await db.User.query().where({ "username": todo.username }).select("user_id");
 
     await db.Task.query().insert({   
         "user_id": user["user_id"].toString(),
