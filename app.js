@@ -128,7 +128,7 @@ io.on("connection", async socket => {
     socket.emit("tasks", dbTasks.map(dbTask => ({
             username: dbTask.username,
             task: dbTask.task,
-            state: db.Task.state
+            //state: db.Task.state
     })));
     //console.log("task1" + task);
 
@@ -137,7 +137,8 @@ io.on("connection", async socket => {
         console.log("The client added this task", task);
         const todo = {
             username: socket.request.session.username,
-            task
+            task,
+            //state
         };
 
         socket.emit("tasks", [todo]);
@@ -150,7 +151,8 @@ async function saveTask(todo) {
 
     await db.Task.query().insert({   
         "user_id": user["user_id"].toString(),
-        "task": todo.task
+        "task": todo.task,
+        //"state": todo.state
     });
 };
 
