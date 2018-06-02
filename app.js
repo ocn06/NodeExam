@@ -114,7 +114,7 @@ io.on("connection", async socket => {
     // [{ 'user_id': 11, 'task_id': 1, task: 'homework' }, ...]
     const dbTasks = await db.Task.query().join("users", join => {
         join.on("tasks.user_id", "=", "users.user_id")
-    }).select("task", "username");
+    }).select("task", "username", "state");
 
 
     //disconnect user
@@ -127,7 +127,8 @@ io.on("connection", async socket => {
     //sender til client ?
     socket.emit("tasks", dbTasks.map(dbTask => ({
             username: dbTask.username,
-            task: dbTask.task
+            task: dbTask.task,
+            state: db.Task.state
     })));
     //console.log("task1" + task);
 

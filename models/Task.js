@@ -13,7 +13,8 @@ class Task extends Model {
             properties: {
                 task_id: {type: "string"},
                 user_id: {type: "string"},
-                task: {type: "string", minLength: 1}
+                task: {type: "string", minLength: 1},
+                state: {type: "string"}
             }
         }        
     }
