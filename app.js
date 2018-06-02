@@ -1,18 +1,18 @@
 const express = require("express");
-const session = require("express-session");
-const bodyParser = require("body-parser");
-const bcrypt = require("bcrypt");
-const cookieParser = require("cookie-parser");
-const app = express();
-const server = require("http").Server(app);
-const io = require("socket.io")(server);
+      session = require("express-session"),
+      bodyParser = require("body-parser"),
+      bcrypt = require("bcrypt"),
+      cookieParser = require("cookie-parser"),
+      app = express(),
+      server = require("http").Server(app),
+      io = require("socket.io")(server),
 
 
-const Knex = require("knex");
-const objection = require("objection");
-const Model = objection.Model;
-const knexConfig = require("./knexfile.js");
-const knex = Knex(knexConfig.development);
+      Knex = require("knex"),
+      objection = require("objection"),
+      Model = objection.Model,
+      knexConfig = require("./knexfile.js"),
+      knex = Knex(knexConfig.development);
 
 // gives knex connection to objection.js
 Model.knex(knex);
@@ -24,13 +24,13 @@ const db = {
     "Task": require("./models/Task.js")
 };
 
-const saltRounds = 10;
-const expressSession = session({
-    secret: "ssshhhhh",
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        maxAge: 60000 // expires after 1 hour
+const saltRounds = 10,
+      expressSession = session({
+        secret: "ssshhhhh",
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            maxAge: 60000 // expires after 1 hour
     }
 });
 
@@ -116,6 +116,14 @@ io.on("connection", async socket => {
         join.on("tasks.user_id", "=", "users.user_id")
     }).select("task", "username");
 
+
+    //disconnect user
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+        socket.disconnect(true);
+    });
+
+
     //sender til client ?
     socket.emit("tasks", dbTasks.map(dbTask => ({
             username: dbTask.username,
@@ -123,7 +131,7 @@ io.on("connection", async socket => {
     })));
     //console.log("task1" + task);
 
-    //lytter til clienten og laver deklarerer objekt
+    //lytter til clienten og deklarerer objekt
     socket.on("tasks", task => {
         console.log("The client added this task", task);
         const todo = {
@@ -131,9 +139,8 @@ io.on("connection", async socket => {
             task
         };
 
-        io.emit("tasks", [todo]);
+        socket.emit("tasks", [todo]);
         saveTask(todo);
-        console.log("todo is saved successfully" + " todo: " + todo.task + " username " + todo.username + socket.request.session.username + "task: " + task);
     });
 });
 
@@ -144,7 +151,6 @@ async function saveTask(todo) {
         "user_id": user["user_id"].toString(),
         "task": todo.task
     });
-
 };
 
 

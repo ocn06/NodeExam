@@ -1,15 +1,15 @@
 
 exports.up = function(knex, Promise) {
     return knex.schema
-    .createTable('todos', function(table) {
-        table.increments('todo_id').primary();
-        table.string('todo');
+    .createTable('tasks', function(table) {
+        table.increments('task_id').primary();
+        table.string('tasks');
         table.string('user_id');
     });
 };
 
 exports.down = function(knex, Promise) {
     return knex.schema
-    .dropTableIfExists('todos');
+    .dropTableIfExists('tasks');
   
 };

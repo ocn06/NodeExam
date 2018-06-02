@@ -25,10 +25,10 @@
                     <a href="/signin" class="float-right btn btn-outline-primary">Sign Out</a>
                     <h4 class="card-title text mb-4 mt-1">What To Do?</h4>
                     <hr>
-                    <div class="form-group-center" text-align="center">
-                    <div class="input-group-center" text-align="center"> 
+                    <div class="form-group-center text-center">
+                    <div class="input-group-center text-center"> 
                     <div id="list">    
-                        <h5 id="user" class="text-center">{{username}} To Dos</h5><br>
+                        <h5 id="user" class="text-center">To Dos</h5><br>
                         <ul id="todos"></ul>
                         <input id="newTask" class="form-control-sm " placeholder="What To Do?" autocomplete="off" />
                         <button type="submit" class="btn-sm btn-primary btn-block-sm">Add</button>
@@ -41,19 +41,25 @@
     </form>
         
     <script> 
-        //$(document).ready(function() {
         $(function(){
             const socket = io.connect("http://localhost:3000/");
             /* const username = document.getElementById("user");
             username.innerText = `${task.username}`; */
             console.log(socket);
     
-                $('form').submit(function () {
+                $('form').submit(() => {
                 const task = $('#newTask').val();
                 socket.emit("tasks", task);
                 $('#newTask').val('');
                 return false;
+
+                $('#todos li').click(() => {
+                    $(this).addClass('checked', () => {
+                        $(this).css("text-decoration, line-through");
+                    });
+                }); 
             });
+
     
             //bliver kaldt, når der addes task
             //data der sendes 
@@ -67,11 +73,7 @@
     
                     tasksElement.appendChild(taskElement); // adds <li> to the <ul>
                 };
-
-                $('#list li').click( () => {
-                    $(this).css("text-decoration", "line-through");
-                });
-            });
+            }); 
         });
     </script>
 </body>
