@@ -5,6 +5,7 @@ exports.up = function(knex, Promise) {
         table.increments('task_id').primary();
         table.string('tasks');
         table.string('user_id');
+        table.string('state');
     });
 };
 

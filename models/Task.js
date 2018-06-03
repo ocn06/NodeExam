@@ -5,6 +5,7 @@ class Task extends Model {
         return 'tasks';
     }
 
+    //JSON
     static get jsonSchema() {
         return {
             type: 'object',

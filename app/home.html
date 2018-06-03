@@ -53,11 +53,17 @@
                 $('#newTask').val('');
                 return false;
 
-                $('#todos li').click(() => {
+               /*  $('#todos li').click(() => {
                     $(this).addClass('checked', () => {
                         $(this).css("text-decoration, line-through");
                     });
-                }); 
+                }); */ 
+
+                $('#taskElement li').on('click', () => {
+                    $(this).addClass('checked', () => {
+                        $(this).css(("text-decoration, line-through"));
+                    });
+                });
             });
 
     

@@ -12,7 +12,7 @@ ul li {
 
 }
 
-ul li:hover {
+ul tasksElement:hover {
     text-decoration-color: yellowgreen;
 } 
 
@@ -21,7 +21,7 @@ ul li:hover {
 } */
 
 /* * When clicked on, strike out text */
-ul li.checked {
+ul tasksElement.checked {
     text-decoration: line-through;
 }   
 

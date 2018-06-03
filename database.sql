@@ -1,4 +1,4 @@
-INSERT INTO Users (password, username, email)
+/* INSERT INTO Users (password, username, email)
 VALUES ('passtest', 'usertest', 'test@test.test');
 
 INSERT INTO Customers (CustomerName, ContactName, Address, City, PostalCode, Country)
@@ -11,3 +11,4 @@ CREATE TABLE Tasks (
     PRIMARY KEY (task_id)
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
+ */
