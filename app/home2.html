@@ -19,22 +19,25 @@
 
 <body>
     <form action="">
-        <div class "container">
+        <div class="container">
             <div class="card">
                 <article class="card-body">
                     <a href="/signin" class="float-right btn btn-outline-primary">Sign Out</a>
                     <h4 class="card-title text mb-4 mt-1">What To Do?</h4>
                     <hr>
                     <div class="form-group-center text-center">
-                    <div class="input-group-center text-center"> 
-                    <div id="list">    
+                    <div class="input-group-center text-center">
+
+                    <div id="list">
                         <h5 id="user" class="text-center">{{username}}'s To Dos</h5><br>
-                        <ul id="todos"></ul>
+                        <ul id="todos">
+                        </ul>
                         <input id="newTask" class="form-control-sm " placeholder="What To Do?" autocomplete="off" />
                         <button type="submit" class="btn-sm btn-primary btn-block-sm">Add</button>
                     </div> <!-- div list -->
                     </div> <!-- input-group -->
                     </div> <!-- form-group -->
+
                 </article>
             </div>
         </div>
@@ -43,30 +46,21 @@
     <script> 
         $(function(){
             const socket = io.connect("http://localhost:3000/");
-            /* const username = document.getElementById("user");
-            username.innerText = `${task.username}`; */
-            console.log(socket);
-    
+
+//            const username = document.getElementById("user");
+//            username.innerText = ${task.username};
                 $('form').submit(() => {
                 const task = $('#newTask').val();
                 socket.emit("tasks", task);
                 $('#newTask').val('');
-                return false;
 
                 $('#todos li').click(() => {
-                    $(this).addClass('checked', () => {
-                        $(this).css("text-decoration, line-through");
-                    });
-                }); 
+                $("#todos li").wrap("<strike>");
+            });
+                return false;
 
-                /* $('#tasksElement checked').on('click', () => {
-                    $(this).addClass('checked', () => {
-                        //$(this).css(("text-decoration, line-through"));
-                    });
-                }); */
             });
 
-    
             //bliver kaldt, når der addes task
             //data der sendes 
             socket.on("tasks", tasks => {

@@ -2,7 +2,7 @@
     padding: 20px;
     list-style-type: none;
     text-align: center;
-    overflow-y: scroll; */
+    overflow-y: scroll;
     overflow-x: none;
 }
 
@@ -12,7 +12,7 @@ ul li {
 
 }
 
-ul tasksElement:hover {
+li tasksElement:hover {
     text-decoration-color: yellowgreen;
 } 
 
@@ -21,7 +21,7 @@ ul tasksElement:hover {
 } */
 
 /* * When clicked on, strike out text */
-ul tasksElement.checked {
+li tasksElement.checked {
     text-decoration: line-through;
 }   
 

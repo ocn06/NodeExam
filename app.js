@@ -14,6 +14,10 @@ const express = require("express");
       knexConfig = require("./knexfile.js"),
       knex = Knex(knexConfig.development);
 
+      mail = require("./mail.js");
+
+
+
 // gives knex connection to objection.js
 Model.knex(knex);
 
@@ -46,6 +50,7 @@ io.use((socket, next) => {
 
 app.get("/", async (req, res) => {
     if (req.session.userId) {
+        console.log('USERNAME', req.session.username)
         const [username] = await db.User.query().select("username").where("user_id", req.session.userId);
         res.sendFile(__dirname + "/app/home.html", { username })
     } else {
@@ -82,6 +87,9 @@ app.post("/api/signup", async (req, res) => {
     req.session.userId = user["user_id"];
     req.session.username = username;
     req.session.email = email;
+
+    mail.transporter.sendMail(mail);
+
     return res.json({ status: 200, error: null });
 });
 
@@ -101,7 +109,6 @@ app.post("/api/signin", async (req, res) => {
         req.session.userId = user["user_id"];
         req.session.username = username["username"];
         req.session.email = email;
-        //console.log("username:" + username)
         return res.json({ status : 200, error: null });
     };
 
@@ -125,7 +132,8 @@ io.on("connection", async socket => {
 
 
     //sender til client ?
-    socket.emit("tasks", dbTasks.map(dbTask => ({
+    //socket.emit("tasks", dbTasks.where(username, ).map(dbTask => ({
+        socket.emit("tasks", dbTasks.map(dbTask => ({ 
             username: dbTask.username,
             task: dbTask.task,
             //state: db.Task.state

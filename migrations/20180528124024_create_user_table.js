@@ -1,4 +1,4 @@
-
+//migration applied
 exports.up = function(knex, Promise) {
     return knex.schema
         .createTable('users', function(table) {
@@ -9,6 +9,7 @@ exports.up = function(knex, Promise) {
         });
 };
 
+//migration rollback
 exports.down = function(knex, Promise) {
     return knex.schema
         .dropTableIfExists('users');
