@@ -1,21 +1,18 @@
 const express = require("express");
-      session = require("express-session"),
-      bodyParser = require("body-parser"),
-      bcrypt = require("bcrypt"),
-      cookieParser = require("cookie-parser"),
-      app = express(),
-      server = require("http").Server(app),
-      io = require("socket.io")(server),
+        session = require("express-session"),
+        bodyParser = require("body-parser"),
+        bcrypt = require("bcrypt"),
+        cookieParser = require("cookie-parser"),
+        app = express(),
+        server = require("http").Server(app),
+        io = require("socket.io")(server),
 
 
-      Knex = require("knex"),
-      objection = require("objection"),
-      Model = objection.Model,
-      knexConfig = require("./knexfile.js"),
-      knex = Knex(knexConfig.development);
-
-      mail = require("./mail.js");
-
+        Knex = require("knex"),
+        objection = require("objection"),
+        Model = objection.Model,
+        knexConfig = require("./knexfile.js"),
+        knex = Knex(knexConfig.development);
 
 
 // gives knex connection to objection.js
@@ -148,7 +145,7 @@ io.on("connection", async socket => {
             "name": name,
             "done": 0
         });
-        
+
         socket.emit("tasks", [{
             id: dbTask.id,
             name: dbTask.name,
