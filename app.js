@@ -1,19 +1,18 @@
 const express = require("express");
-        session = require("express-session"),
-        bodyParser = require("body-parser"),
-        bcrypt = require("bcrypt"),
-        cookieParser = require("cookie-parser"),
-        app = express(),
-        server = require("http").Server(app),
-        io = require("socket.io")(server),
+      session = require("express-session"),
+      bodyParser = require("body-parser"),
+      bcrypt = require("bcrypt"),
+      cookieParser = require("cookie-parser"),
+      app = express(),
 
+      server = require("http").Server(app),
+      io = require("socket.io")(server),
+      Knex = require("knex"),
+      objection = require("objection"),
+      knexConfig = require("./knexfile.js"),
 
-        Knex = require("knex"),
-        objection = require("objection"),
-        Model = objection.Model,
-        knexConfig = require("./knexfile.js"),
-        knex = Knex(knexConfig.development);
-
+      Model = objection.Model,
+      knex = Knex(knexConfig.development);
 
 // gives knex connection to objection.js
 Model.knex(knex);
@@ -26,11 +25,11 @@ const db = {
 };
 
 const saltRounds = 10,
-      expressSession = session({
-        secret: "ssshhhhh",
-        resave: false,
-        saveUninitialized: true,
-        cookie: {
+    expressSession = session({
+    secret: "ssshhhhh",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
             maxAge: 60000 // expires after 1 hour
     }
 });
@@ -44,7 +43,6 @@ app.use(expressSession);
 io.use((socket, next) => {
     expressSession(socket.request, socket.request.res, next);
 });
-
 
 app.get("/", async (req, res) => {
     if (req.session.userId) {
@@ -83,8 +81,6 @@ app.post("/api/signup", async (req, res) => {
     req.session.userId = user["user_id"];
     req.session.username = username;
     req.session.email = email;
-
-    mail.transporter.sendMail(mail);
 
     return res.json({ status: 200, error: null });
 });
