@@ -38,6 +38,7 @@ const saltRounds = 10,
     }
 });
 
+app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/app/'));
 app.use(bodyParser.json());
@@ -50,20 +51,18 @@ io.use((socket, next) => {
 
 app.get("/", async (req, res) => {
     if (req.session.userId) {
-        console.log('USERNAME', req.session.username)
-        const [username] = await db.User.query().select("username").where("user_id", req.session.userId);
-        res.sendFile(__dirname + "/app/home.html", { username })
+        res.render(__dirname + "/app/home", { username: req.session.username });
     } else {
         res.redirect("/signin/");
     }
 });
 
 app.get("/signin", (req, res) => {
-    res.sendFile(__dirname + "/app/signin/signin.html");
+    res.render(__dirname + "/app/signin/signin");
 });
 
 app.get("/signup", (req, res) => {
-    res.sendFile(__dirname + "/app/signup/signup.html");
+    res.render(__dirname + "/app/signup/signup");
 });
 
 app.post("/api/signup", async (req, res) => {
