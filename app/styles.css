@@ -1,4 +1,4 @@
-#todos {
+#tasks {
     padding: 20px;
     list-style-type: none;
     text-align: center;
@@ -6,32 +6,10 @@
     overflow-x: none;
 }
 
-/* Style the list items */
 ul li {
     cursor: pointer;
-
 }
 
-li tasksElement:hover {
-    text-decoration-color: yellowgreen;
-} 
-
-/* todos-clicked {
+li.is-done {
     text-decoration: line-through;
-} */
-
-/* * When clicked on, strike out text */
-li tasksElement.checked {
-    text-decoration: line-through;
-}   
-
-/* Add a "checked" mark when clicked on */
-/* ul li.checked::before {
-    content: '';
-}  */
-
-/* .body {
-    text-align: center;
-} */
-
-
+}

@@ -1,13 +1,11 @@
 //jQuery
 $(document).ready(function() {
-    console.log("document ready")
     $("#signinform").submit(function() {
         console.log('form submit');
         $.ajax({
             data: $(this).serialize(),
             url: this.action,
             type: this.method,
-            //callback function
             error: error => {
                 console.log("Error ", error);
             },

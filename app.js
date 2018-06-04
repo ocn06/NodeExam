@@ -51,9 +51,9 @@ io.use((socket, next) => {
 
 app.get("/", async (req, res) => {
     if (req.session.userId) {
-        res.render(__dirname + "/app/home", { username: req.session.username });
+        res.render(__dirname + "/app/home/home", { username: req.session.username });
     } else {
-        res.redirect("/signin/");
+       res.redirect("/signin/");
     }
 });
 
@@ -66,7 +66,7 @@ app.get("/signup", (req, res) => {
 });
 
 app.post("/api/signup", async (req, res) => {
-    console.log("signup");
+    console.log("/api/signup");
         
     const username = req.body.username;
     const password = req.body.password;
@@ -93,7 +93,7 @@ app.post("/api/signup", async (req, res) => {
 });
 
 app.post("/api/signin", async (req, res) => {
-    console.log("signin");
+    console.log("/api/signin");
 
     const email = req.body.email;
     const password = req.body.password;
@@ -115,54 +115,63 @@ app.post("/api/signin", async (req, res) => {
 });
 
 io.on("connection", async socket => {
-    console.log("A client connected with session", socket.request.session);
+    console.log(`A client connected with userId ${socket.request.session.userId}`);
 
-    // [{ 'user_id': 11, 'task_id': 1, task: 'homework' }, ...]
-    const dbTasks = await db.Task.query().join("users", join => {
-        join.on("tasks.user_id", "=", "users.user_id")
-    }).select("task", "username", "state");
+    const dbTasks = await db.Task.query()
+        .join("users", join => { join.on("tasks.user_id", "=", "users.user_id")})
+        .where("tasks.user_id", socket.request.session.userId)
+        .select("task_id", "name", "done");
 
+    // Sends the tasks to the client
+    socket.emit("tasks", dbTasks.map(dbTask => ({
+        id: dbTask.task_id,
+        name: dbTask.name,
+        done: !!dbTask.done
+    })));
 
-    //disconnect user
+    // Listens to when the client disconnects
     socket.on('disconnect', () => {
         console.log('user disconnected');
         socket.disconnect(true);
     });
 
+    // Listens to when the client creates a new task
+    socket.on("tasks", async name => {
+        console.log("The client added this task", name);
+        
+        const [user] = await db.User.query()
+            .where({ "username": socket.request.session.username })
+            .select("user_id");
 
-    //sender til client ?
-    //socket.emit("tasks", dbTasks.where(username, ).map(dbTask => ({
-        socket.emit("tasks", dbTasks.map(dbTask => ({ 
-            username: dbTask.username,
-            task: dbTask.task,
-            //state: db.Task.state
-    })));
-    //console.log("task1" + task);
+        const dbTask = await db.Task.query().insert({   
+            "user_id": user["user_id"].toString(),
+            "name": name,
+            "done": 0
+        });
+        
+        socket.emit("tasks", [{
+            id: dbTask.id,
+            name: dbTask.name,
+            done: !!dbTask.done
+        }]);
+    });
 
-    //lytter til clienten og deklarerer objekt
-    socket.on("tasks", task => {
-        console.log("The client added this task", task);
-        const todo = {
-            username: socket.request.session.username,
-            task,
-            //state
+    // Listens to when the client toggles the done state of a task
+    socket.on("toggleTask", async taskId => {
+        const whereClause = {
+            "user_id": socket.request.session.userId,
+            "task_id": taskId
         };
 
-        socket.emit("tasks", [todo]);
-        saveTask(todo);
+        const [{done}] = await db.Task.query()
+            .where(whereClause)
+            .select("done");
+
+        await db.Task.query()
+            .update({ done: done === 0 ? 1 : 0 })
+            .where(whereClause);
     });
 });
-
-async function saveTask(todo) {
-    const [user] = await db.User.query().where({ "username": todo.username }).select("user_id");
-
-    await db.Task.query().insert({   
-        "user_id": user["user_id"].toString(),
-        "task": todo.task,
-        //"state": todo.state
-    });
-};
-
 
 server.listen(3000, () => {
     console.log("Server is listening on port 3000");

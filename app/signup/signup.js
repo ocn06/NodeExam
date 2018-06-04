@@ -6,10 +6,10 @@ $(document).ready(function() {
             data: $(this).serialize(),
             url: this.action,
             type: this.method,
-            error: error => { // callback
+            error: error => {
                 console.error("Error", error);
             },
-            success: result => { // callback
+            success: result => {
                 console.log("result", result);
                 switch(result.status) {
                     case 200:

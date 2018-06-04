@@ -3,9 +3,9 @@ exports.up = function(knex, Promise) {
     return knex.schema
     .createTable('tasks', function(table) {
         table.increments('task_id').primary();
-        table.string('tasks');
+        table.string('name');
         table.string('user_id');
-        table.string('state');
+        table.integer('done');
     });
 };
 
